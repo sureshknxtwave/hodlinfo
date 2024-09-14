@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hodlinfo</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+        <div class="logo">HODLINFO</div>
+        <div class="buttons">
+            <select class="btn btn-secondary">
+                <option value="INR" selected>INR</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+            </select>
+            <select class="btn btn-secondary">
+                <option value="BTC" selected>BTC</option>
+                <option value="ETH">ETH</option>
+                <option value="USDT">USDT</option>
+            </select>
+            <button class="btn btn-secondary">BUY BTC</button>
+        </div>
+        <div class="buttons">
+            <button class="btn btn-telegram">
+                <img src="https://pluspng.com/img-png/telegram-logo-png-telegram-app-icon-png-50-px-1600.png" alt="Telegram" style="width: 20px; height: 20px;">
+                Connect Telegram
+            </button>
+            <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="price-stats-container">
+        <div class="stat">
+            <div class="stat-value positive">0.1%</div>
+            <div class="stat-label">5 Mins</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value positive">0.96%</div>
+            <div class="stat-label">1 Hour</div>
+        </div>
+        <div class="best-price">
+            <div class="best-price-label">Best Price to Trade</div>
+            <div class="best-price-value">₹ 26,56,110</div>
+            <div class="best-price-label">Average BTC/INR net price including commission</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value positive">2.73%</div>
+            <div class="stat-label">1 Day</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value positive">7.51%</div>
+            <div class="stat-label">7 Days</div>
+        </div>
+    </div>
+
+    
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      Loading data...
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+            <th>#</th>
+          <th>Name</th>
+          <th>Last</th>
+          <th>Buy</th>
+          <th>Sell</th>
+          <th>Volume</th>
+          <th>Base Unit</th>
+        </tr>
+      </thead>
+      <tbody id="crypto-data"></tbody>
+    </table>
+  </div>
+
+  <script>
+    async function fetchCryptoData() {
+      const loadingIndicator = document.getElementById('loading');
+      const tableBody = document.getElementById('crypto-data');
+
+   
+      loadingIndicator.style.display = 'flex';
+
+      try {
+        const response = await fetch('http://localhost:3000/api/cryptos');
+        const data = await response.json();
+        tableBody.innerHTML = data.map(item => `
+          <tr>
+              <td>${item.id}</td>
+            <td>${item.name}</td>
+            <td>${item.last}</td>
+            <td>${item.buy}</td>
+            <td>${item.sell}</td>
+            <td>${item.volume}</td>
+            <td>${item.base_unit}</td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        tableBody.innerHTML = `<tr><td colspan="7">Error loading data</td></tr>`;
+      } finally {
+        
+        loadingIndicator.style.display = 'none';
+      }
+    }
+
+    window.onload = fetchCryptoData;
+  </script>
+</body>
+</html>
